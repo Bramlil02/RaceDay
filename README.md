@@ -27,7 +27,6 @@ Stores information about the route and distance of an event.
 
 
 ## Main Features
-
 The RaceDay system allows users to:
 
 - Register and manage participant information.
@@ -40,14 +39,11 @@ The RaceDay system allows users to:
 
 Added SQl file
 ## Database
-
 The database was created using Microsoft SQL Server. Primary keys and foreign keys are used to connect the tables. Constraints such as NOT NULL, UNIQUE, DEFAULT and CHECK are also used to help keep the data accurate.
 Added API Endpoint Plan
 
 ## API
-
 The API will allow the application to communicate with the database. It will provide endpoints for authentication, profiles, events, categories, routes, registrations and results.
 
 ## Project Goal
-
 The main goal of the RaceDay system is to provide a simple way for organisers to manage sporting events and for participants to register for events and view their results.
