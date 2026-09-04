@@ -37,9 +37,12 @@ The RaceDay system allows users to:
 - Record and view race results.
 
 Added SQl file
+
 ## Database
 The database was created using Microsoft SQL Server. Primary keys and foreign keys are used to connect the tables. Constraints such as NOT NULL, UNIQUE, DEFAULT and CHECK are also used to help keep the data accurate.
 
+#Youtube Video
+https://youtu.be/nfmrflvSIIs
 Added API Endpoint Plan
 
 ## API
