@@ -20,7 +20,6 @@ CREATE TABLE EventOrganiser
         UNIQUE (Email)
 );
 
-
 --PARTICIPANT
 CREATE TABLE participant2
 (
@@ -39,7 +38,6 @@ CREATE TABLE participant2
 );
 
 
-
  --CATEGORY
 CREATE TABLE Category2
 (
@@ -53,9 +51,6 @@ CREATE TABLE Category2
     CONSTRAINT UQ_Category_Name
         UNIQUE (CategoryName)
 );
-
-
-
 
 --ROUTE
 CREATE TABLE Route2
@@ -76,9 +71,6 @@ CREATE TABLE Route2
     CONSTRAINT CK_Route_Distance
         CHECK (DistanceKm > 0)
 );
-
-
-
 
 --EVENT
 CREATE TABLE [Event2]
@@ -118,8 +110,6 @@ CREATE TABLE [Event2]
         CHECK (EntryFee >= 0)
 );
 
-
-
 --REGISTRATION
 CREATE TABLE Registration2
 (
@@ -144,26 +134,21 @@ CREATE TABLE Registration2
     ResultStatus VARCHAR(30)
         CONSTRAINT DF_Registration_ResultStatus DEFAULT ('Registered'),
 
-
     CONSTRAINT PK_Registration
         PRIMARY KEY (RegistrationID),
-
 
     CONSTRAINT FK_Registration2_Event
         FOREIGN KEY (EventID)
         REFERENCES [Event2](EventID),
-
 
     CONSTRAINT FK_Registration_Participant2
         FOREIGN KEY (ParticipantID)
         REFERENCES Participant2(ParticipantID),
 
 
-    -- Prevents the same participant registering twice
-    -- for the same event.
+    -- Prevents the same participant registering twice for the same event.
     CONSTRAINT UQ_Registration_Event_Participant
         UNIQUE (EventID, ParticipantID),
-
 
     CONSTRAINT CK_Registration_Position
         CHECK (Position IS NULL OR Position > 0),
