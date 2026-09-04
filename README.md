@@ -45,5 +45,3 @@ Added API Endpoint Plan
 ## API
 The API will allow the application to communicate with the database. It will provide endpoints for authentication, profiles, events, categories, routes, registrations and results.
 
-## Project Goal
-The main goal of the RaceDay system is to provide a simple way for organisers to manage sporting events and for participants to register for events and view their results.
