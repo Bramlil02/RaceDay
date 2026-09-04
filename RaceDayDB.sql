@@ -1,9 +1,8 @@
 
--- CREATING DATABASE
-
+--CREATING DATABASE
 CREATE DATABASE RaceDayDB;
 
-
+--Using for re-using the database
 USE RaceDayDB;
 
 --EVENT ORGANISER
