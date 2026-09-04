@@ -11,12 +11,18 @@ Added ERD
 
 The database contains six main entities:
 
-1. EventOrganiser – Stores information about people or organisations that manage events.
-2. Participant – Stores information about people who participate in events.
-3. Category – Stores the different types of events, such as running, walking and cycling.
-4. Route – Stores information about the route and distance of an event.
-5. Event – Stores information about each RaceDay event.
-6. Registration – Connects participants to events and stores their registration and result information.
+1. EventOrganiser
+   Stores information about people or organisations that manage events.
+2. Participant
+ Stores information about people who participate in events.
+3. Category
+  Stores the different types of events, such as running, walking and cycling.
+4. Route 
+Stores information about the route and distance of an event.
+5. Event
+ Stores information about each RaceDay event.
+6. Registration
+ Connects participants to events and stores their registration and result information.
 
 
 
