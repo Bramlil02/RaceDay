@@ -5,7 +5,7 @@
 RaceDay is an event management system for running, walking and cycling events. The system allows event organisers to create and manage events, while participants can view events and register for them. 
 So this assignment makes use of database to store information about organisers, participants, categories, routes, events and registrations.
 
-Added ERD
+Added Entity Relationship Diagram
 
 ## Main Entities
 
