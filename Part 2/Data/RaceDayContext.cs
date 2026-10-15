@@ -13,7 +13,7 @@ namespace Part_2.Data
 
         public DbSet<Category> Categories => Set<Category>();
 
-       public DbSet<Route> Routes => Set<Route>();
+       public DbSet<RaceRoute> RaceRoutes => Set<RaceRoute>();
 
        public DbSet<RaceEvent> RaceEvents => Set<RaceEvent>();
 

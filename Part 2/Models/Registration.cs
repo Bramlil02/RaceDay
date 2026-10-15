@@ -14,13 +14,13 @@
 
         public string PaymentStatus { get; set; } = "Pending";
 
-        public TimeSpan? FinishTime { get; set; }
+        public string? FinishTime { get; set; }
 
-        public int Position { get; set; }
+        public int? Position { get; set; }
 
-        public decimal AveragePace { get; set; }
+        public decimal? AveragePace { get; set; }
          
-        public string ResultStatus { get; set; } = "Registered";
+        public string? ResultStatus { get; set; } = "Registered";
 
     }//end of class
 }//end of namespace
