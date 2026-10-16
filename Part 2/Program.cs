@@ -91,3 +91,6 @@ app.MapControllers();
 
 // Starts the API.
 app.Run();
+
+// Defines a partial class for the program, allowing for future extensions.
+public partial class Program {}

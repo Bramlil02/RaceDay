@@ -1,6 +1,6 @@
 ﻿namespace Part_2.Models
 {//start of namespace
-    public class RaceEvent
+    public class RaceEvents
     {//start of class
         //Primary Key
         public int EventID { get; set; }

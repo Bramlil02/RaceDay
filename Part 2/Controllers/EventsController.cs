@@ -60,7 +60,7 @@ namespace Part_2.Controllers
         [Authorize(Roles = "Admin,Organizer")]
         [HttpPost]
         public async Task<IActionResult> CreateEvent(
-            RaceEvent raceEvent)
+            RaceEvents raceEvent)
         {// Start of CreateEvent method
 
             // Adds the new event to the database.
@@ -80,7 +80,7 @@ namespace Part_2.Controllers
         [Authorize(Roles = "Admin,Organizer")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEvent(
-            int id, RaceEvent updatedEvent)
+            int id, RaceEvents updatedEvent)
         {// Start of UpdateEvent method
          // Ensures the URL ID matches the event ID in the request.
             if (id != updatedEvent.EventID)

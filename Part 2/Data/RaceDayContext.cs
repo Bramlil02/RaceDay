@@ -15,7 +15,7 @@ namespace Part_2.Data
 
        public DbSet<RaceRoute> RaceRoutes => Set<RaceRoute>();
 
-       public DbSet<RaceEvent> RaceEvents => Set<RaceEvent>();
+       public DbSet<RaceEvents> RaceEvents => Set<RaceEvents>();
 
         public DbSet<Registration> Registrations => Set<Registration>();
 
@@ -41,16 +41,16 @@ namespace Part_2.Data
 
             modelBuilder.Entity<RaceRoute>().Property(x => x.DistanceKm).HasPrecision(6, 2);
 
-            modelBuilder.Entity<RaceEvent>().ToTable("Event").HasKey(x => x.EventID);
-            modelBuilder.Entity<RaceEvent>().Property(x => x.EntryFee).HasPrecision(10, 2);
+            modelBuilder.Entity<RaceEvents>().ToTable("Event").HasKey(x => x.EventID);
+            modelBuilder.Entity<RaceEvents>().Property(x => x.EntryFee).HasPrecision(10, 2);
 
 
 
-            modelBuilder.Entity<RaceEvent>().HasOne<EventOrganiser>().WithMany().HasForeignKey(x => x.OrganizerID);
+            modelBuilder.Entity<RaceEvents>().HasOne<EventOrganiser>().WithMany().HasForeignKey(x => x.OrganizerID);
 
-            modelBuilder.Entity<RaceEvent>().HasOne<Category>().WithMany().HasForeignKey(x => x.CategoryID);
+            modelBuilder.Entity<RaceEvents>().HasOne<Category>().WithMany().HasForeignKey(x => x.CategoryID);
 
-            modelBuilder.Entity<RaceEvent>().HasOne<RaceRoute>().WithMany().HasForeignKey(x => x.RouteID);
+            modelBuilder.Entity<RaceEvents>().HasOne<RaceRoute>().WithMany().HasForeignKey(x => x.RouteID);
 
             modelBuilder.Entity<Registration>().ToTable("Registration").HasKey(x => x.RegistrationID);
 
@@ -58,7 +58,7 @@ namespace Part_2.Data
 
             modelBuilder.Entity<Registration>().Property(x => x.AveragePace).HasPrecision(5, 2);
 
-            modelBuilder.Entity<Registration>().HasOne<RaceEvent>().WithMany().HasForeignKey(x => x.EventID);
+            modelBuilder.Entity<Registration>().HasOne<RaceEvents>().WithMany().HasForeignKey(x => x.EventID);
 
             modelBuilder.Entity<Registration>().HasOne<Participant>().WithMany().HasForeignKey(x => x.ParticipantID);
 
