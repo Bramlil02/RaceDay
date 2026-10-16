@@ -1,18 +1,24 @@
 ﻿namespace Part_2.Models
-{
+{//Start of namespace
     public class UserAccount
-    {
-            public int UserAccountID { get; set; }
+    {//Start of class
 
-            public string FullName { get; set; } = string.Empty;
+        // Unique ID for each user account.
+        public int UserAccountID { get; set; }
 
-            public string Email { get; set; } = string.Empty;
+        // Stores the user's full name.
+        public string FullName { get; set; } = string.Empty;
 
-            // Store a password hash, never the plain password
-            public string PasswordHash { get; set; } = string.Empty;
+        // Stores the user's email address.
+        public string Email { get; set; } = string.Empty;
 
-            // Examples: Admin, Organizer, Participant
-            public string Role { get; set; } = "Participant";
-        }
-    }
+        // Store a password hash, never the plain password
+        public string PasswordHash { get; set; } = string.Empty;
 
+        // Identifies the user's permissions in the system.
+        // Examples include Admin, Organizer and Participant.
+        public string Role { get; set; } = "Participant";
+
+
+        }//End of class
+    }//End of namespace
