@@ -19,6 +19,7 @@ namespace Part_2.Data
 
         public DbSet<Registration> Registrations => Set<Registration>();
 
+        // Gives the database context access to user account records.
         public DbSet<UserAccount> UserAccounts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
