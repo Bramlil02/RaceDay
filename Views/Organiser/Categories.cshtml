@@ -1,0 +1,87 @@
+@model EventCategoriesViewModel
+
+@{
+    ViewData["Title"] = "Event categories";
+}
+
+<div class="container">
+
+    <div class="rd-page-header">
+        <h1>Categories</h1>
+        <p>@Model.Event.EventName &middot; @Model.Event.EventDate.ToString("d MMM yyyy")</p>
+    </div>
+
+    <p><a asp-action="Events">&larr; Back to my events</a></p>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="rd-panel">
+                <h4 class="text-uppercase fw-bold mb-3">Current categories</h4>
+
+                @if (!Model.Categories.Any())
+                {
+                    <p class="text-muted mb-0">No categories yet. Participants will enrol in the main event.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table rd-table align-middle mb-0">
+                            <thead>
+                                <tr><th>Name</th><th>Type</th><th>Details</th><th></th></tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var category in Model.Categories)
+                                {
+                                    <tr>
+                                        <td><strong>@category.Name</strong></td>
+                                        <td>@category.CategoryType</td>
+                                        <td>@category.Description</td>
+                                        <td class="text-end">
+                                            <form asp-action="DeleteCategory" method="post" class="d-inline"
+                                                  onsubmit="return confirm('Remove this category?');">
+                                                <input type="hidden" name="categoryId" value="@category.EventCategoryID" />
+                                                <input type="hidden" name="eventId" value="@Model.Event.EventID" />
+                                                <button type="submit" class="btn btn-outline-danger btn-sm">Remove</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="rd-panel">
+                <h4 class="text-uppercase fw-bold mb-3">Add a category</h4>
+
+                <form asp-action="AddCategory" method="post">
+                    <input type="hidden" name="EventID" value="@Model.Event.EventID" />
+
+                    <div class="mb-3">
+                        <label class="form-label" for="Name">Name</label>
+                        <input type="text" id="Name" name="Name" class="form-control" maxlength="100" required
+                               placeholder="e.g. 10 km, Under 20, Masters 50+" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="CategoryType">Type</label>
+                        <select id="CategoryType" name="CategoryType" class="form-select">
+                            <option value="Distance">Distance</option>
+                            <option value="Age">Age</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="Description">Details (optional)</label>
+                        <input type="text" id="Description" name="Description" class="form-control" maxlength="300" />
+                    </div>
+
+                    <button type="submit" class="btn btn-rd-primary w-100">Add category</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

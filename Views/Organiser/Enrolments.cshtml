@@ -1,0 +1,85 @@
+@model EventEnrolmentsViewModel
+
+@{
+    ViewData["Title"] = "Enrolments";
+}
+
+<div class="container">
+
+    <div class="rd-page-header">
+        <h1>Enrolments</h1>
+        <p>@Model.Event.EventName &middot; @Model.Event.EventDate.ToString("d MMM yyyy")</p>
+    </div>
+
+    <p><a asp-action="Events">&larr; Back to my events</a></p>
+
+    @if (!Model.Enrolments.Any())
+    {
+        <div class="rd-panel text-center">
+            <h3>No participants have enrolled yet</h3>
+        </div>
+    }
+    else
+    {
+        <div class="rd-panel">
+            <p class="text-muted">@Model.Enrolments.Count participant(s) enrolled</p>
+
+            <div class="table-responsive">
+                <table class="table rd-table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Participant</th>
+                            <th>Email</th>
+                            <th>Category</th>
+                            <th>Enrolled</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var e in Model.Enrolments)
+                        {
+                            <tr>
+                                <td><strong>@e.ParticipantName</strong></td>
+                                <td>@e.ParticipantEmail</td>
+                                <td>@(string.IsNullOrEmpty(e.CategoryName) ? "-" : e.CategoryName)</td>
+                                <td>@e.RegistrationDate.ToString("d MMM yyyy")</td>
+                                <td><partial name="_StatusBadge" model="@e.PaymentStatus" /></td>
+                                <td class="text-end text-nowrap">
+                                    @if (!e.PaymentStatus.Equals("Confirmed", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        <form asp-action="UpdateStatus" method="post" class="d-inline">
+                                            <input type="hidden" name="registrationId" value="@e.RegistrationID" />
+                                            <input type="hidden" name="eventId" value="@Model.Event.EventID" />
+                                            <input type="hidden" name="status" value="Confirmed" />
+                                            <button type="submit" class="btn btn-sm btn-success">Confirm</button>
+                                        </form>
+                                    }
+                                    @if (!e.PaymentStatus.Equals("Pending", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        <form asp-action="UpdateStatus" method="post" class="d-inline">
+                                            <input type="hidden" name="registrationId" value="@e.RegistrationID" />
+                                            <input type="hidden" name="eventId" value="@Model.Event.EventID" />
+                                            <input type="hidden" name="status" value="Pending" />
+                                            <button type="submit" class="btn btn-sm btn-warning">Set pending</button>
+                                        </form>
+                                    }
+                                    @if (!e.PaymentStatus.Equals("Cancelled", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        <form asp-action="UpdateStatus" method="post" class="d-inline"
+                                              onsubmit="return confirm('Cancel this enrolment?');">
+                                            <input type="hidden" name="registrationId" value="@e.RegistrationID" />
+                                            <input type="hidden" name="eventId" value="@Model.Event.EventID" />
+                                            <input type="hidden" name="status" value="Cancelled" />
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">Cancel</button>
+                                        </form>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

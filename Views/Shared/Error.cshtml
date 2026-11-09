@@ -1,0 +1,18 @@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container py-5">
+    <div class="rd-panel text-center">
+        <h1 class="rd-heading">@Model.Title</h1>
+        <p class="lead">@Model.Message</p>
+
+        @if (Model.ShowRequestId)
+        {
+            <p class="text-muted small">Reference: <code>@Model.RequestId</code></p>
+        }
+
+        <a asp-controller="Home" asp-action="Index" class="btn btn-rd-primary mt-2">Back to RaceDay</a>
+    </div>
+</div>

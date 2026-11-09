@@ -1,179 +1,98 @@
-﻿
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http.Json;
-using System.Text.Json;
+using RaceDayMVC.Helpers;
 using RaceDayMVC.Models;
+using RaceDayMVC.Services;
 
 namespace RaceDayMVC.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-
-        public AccountController(IHttpClientFactory httpClientFactory)
+        public AccountController(RaceDayApiService api) : base(api)
         {
-            _httpClientFactory = httpClientFactory;
         }
 
         // GET: Account/Login
         [HttpGet]
         public IActionResult Login()
         {
+            if (HttpContext.Session.IsLoggedIn() && !HttpContext.Session.IsTokenExpired())
+                return RedirectToAction("Index", "Home");
+
             return View();
         }
 
         // POST: Account/Login
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
+                return View(model);
+
+            var result = await Api.LoginAsync(model.Email.Trim(), model.Password);
+
+            if (!result.Success || result.Data == null)
             {
+                ModelState.AddModelError("", result.Error);
                 return View(model);
             }
 
-            var client = _httpClientFactory.CreateClient("RaceDayAPI");
+            string role = RoleNames.Normalise(result.Data.Role);
 
-            var response = await client.PostAsJsonAsync(
-                "api/Auth/login",
-                new
-                {
-                    Email = model.Email,
-                    Password = model.Password
-                });
-
-            if (!response.IsSuccessStatusCode)
+            if (string.IsNullOrEmpty(role) || string.IsNullOrWhiteSpace(result.Data.Token))
             {
-                ModelState.AddModelError(
-                    "",
-                    "Login failed. Please check your email and password.");
-
+                ModelState.AddModelError("", "Your account could not be signed in. Please contact support.");
                 return View(model);
             }
 
-            var responseText = await response.Content.ReadAsStringAsync();
+            // Keep the token, name, email and role in the session for every page.
+            HttpContext.Session.SignIn(result.Data, role);
 
-            using var document = JsonDocument.Parse(responseText);
-
-            var data = document.RootElement;
-
-            string token = data.GetProperty("token").GetString() ?? "";
-            string fullName = data.GetProperty("fullName").GetString() ?? "";
-            string email = data.GetProperty("email").GetString() ?? "";
-            string role = data.GetProperty("role").GetString() ?? "";
-
-            // Display the role received from the API
-            Console.WriteLine("========== LOGIN DEBUG ==========");
-            Console.WriteLine("API ROLE: " + role);
-
-            if (string.IsNullOrWhiteSpace(token))
-            {
-                ModelState.AddModelError(
-                    "",
-                    "The API did not return a login token.");
-
-                return View(model);
-            }
-
-            // Clean the role returned by the API
-            role = role.Trim();
-
-            // Save the user's details in the session
-            HttpContext.Session.SetString("JWToken", token);
-            HttpContext.Session.SetString("FullName", fullName);
-            HttpContext.Session.SetString("Email", email);
-            HttpContext.Session.SetString("Role", role);
-
-            // Display the role saved in the session
-            Console.WriteLine("SESSION ROLE: " +
-                HttpContext.Session.GetString("Role"));
-
-            // Redirect users according to their role
-            if (role.Equals("Organiser",
-                StringComparison.OrdinalIgnoreCase) ||
-                role.Equals("Organizer",
-                StringComparison.OrdinalIgnoreCase))
-            {
-                Console.WriteLine("REDIRECTING TO ORGANISER DASHBOARD");
-
-                return RedirectToAction("Index", "Organiser");
-            }
-
-            if (role.Equals("Participant",
-                StringComparison.OrdinalIgnoreCase))
-            {
-                Console.WriteLine("PARTICIPANT REDIRECT SELECTED");
-
-                return RedirectToAction("Index", "Participant");
-            }
-
-            Console.WriteLine("UNKNOWN ROLE - REDIRECTING TO HOME");
-
-            return RedirectToAction("Index", "Home");
+            return role == RoleNames.Organiser
+                ? RedirectToAction("Index", "Organiser")
+                : RedirectToAction("Index", "Participant");
         }
 
         // GET: Account/Register
         [HttpGet]
         public IActionResult Register()
         {
+            if (HttpContext.Session.IsLoggedIn() && !HttpContext.Session.IsTokenExpired())
+                return RedirectToAction("Index", "Home");
+
             return View();
         }
 
         // POST: Account/Register
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (!ModelState.IsValid)
+                return View(model);
+
+            var result = await Api.RegisterAsync(
+                model.Name.Trim(),
+                model.Email.Trim(),
+                model.Password,
+                string.IsNullOrWhiteSpace(model.OrganiserCode) ? null : model.OrganiserCode.Trim());
+
+            if (!result.Success)
             {
+                ModelState.AddModelError("", result.Error);
                 return View(model);
             }
 
-            try
-            {
-                var client = _httpClientFactory.CreateClient("RaceDayAPI");
+            TempData["Success"] = "Your account has been created. Please log in.";
 
-                var response = await client.PostAsJsonAsync(
-                    "api/Auth/Register",
-                    new
-                    {
-                        Name = model.Name,
-                        Email = model.Email,
-                        Password = model.Password
-                    });
-
-                string responseMessage =
-                    await response.Content.ReadAsStringAsync();
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    ModelState.AddModelError(
-                        "",
-                        "Registration failed: " + responseMessage);
-
-                    return View(model);
-                }
-
-                TempData["Success"] =
-                    "Your account has been created. Please log in.";
-
-                return RedirectToAction("Login");
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError(
-                    "",
-                    "Could not connect to the RaceDay API: " + ex.Message);
-
-                return View(model);
-            }
+            return RedirectToAction("Login");
         }
 
-        // GET: Account/Logout
-        [HttpGet]
+        // POST: Account/Logout - ends the session and returns to the home page.
+        [HttpPost]
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
+
+            TempData["Success"] = "You have been logged out.";
 
             return RedirectToAction("Index", "Home");
         }

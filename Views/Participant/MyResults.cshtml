@@ -1,0 +1,64 @@
+@model List<ResultRowViewModel>
+
+@{
+    ViewData["Title"] = "My results";
+}
+
+<div class="container">
+
+    <div class="rd-page-header">
+        <h1>My results</h1>
+        <p>Your personal race history across completed events.</p>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="rd-panel text-center">
+            <h3>No results yet</h3>
+            <p class="mb-0">Results appear here after an organiser publishes them for an event you enrolled in.</p>
+        </div>
+    }
+    else
+    {
+        <div class="rd-panel">
+            <div class="table-responsive">
+                <table class="table rd-table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Event</th>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Finish time</th>
+                            <th>Position</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var row in Model)
+                        {
+                            <tr>
+                                <td><strong>@row.EventName</strong></td>
+                                <td>@row.EventDate.ToString("d MMM yyyy")</td>
+                                <td>@(string.IsNullOrEmpty(row.CategoryName) ? "-" : row.CategoryName)</td>
+                                <td>@row.FinishTime</td>
+                                <td>
+                                    @if (row.Position.HasValue)
+                                    {
+                                        <span class="rd-position">@Format.Ordinal(row.Position.Value)</span>
+                                        @if (row.TotalFinishers > 0)
+                                        {
+                                            <span class="text-muted"> out of @row.TotalFinishers finishers</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

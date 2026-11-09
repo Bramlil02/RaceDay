@@ -1,0 +1,103 @@
+@model OrganiserDashboardViewModel
+
+@{
+    ViewData["Title"] = "Organiser dashboard";
+    var upcoming = Model.Events.Where(r => r.Event.EventDate.Date >= DateTime.Today).OrderBy(r => r.Event.EventDate).ToList();
+}
+
+<div class="container">
+
+    <div class="rd-page-header">
+        <h1>Organiser dashboard</h1>
+        <p>Welcome back, @Model.OrganiserName.</p>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="rd-stat">
+                <div class="rd-stat-number">@Model.TotalEvents</div>
+                <div class="rd-stat-label">Events created</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="rd-stat">
+                <div class="rd-stat-number">@Model.TotalEnrolments</div>
+                <div class="rd-stat-label">Total enrolments</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="rd-stat">
+                <div class="rd-stat-number">@Model.UpcomingEvents</div>
+                <div class="rd-stat-label">Upcoming events</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="rd-panel mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="text-uppercase fw-bold mb-0">Upcoming event dates</h4>
+            <a asp-action="CreateEvent" class="btn btn-rd-primary btn-sm">Create event</a>
+        </div>
+
+        @if (!upcoming.Any())
+        {
+            <p class="text-muted mb-0">You have no upcoming events.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table rd-table align-middle mb-0">
+                    <thead>
+                        <tr><th>Date</th><th>Event</th><th>Enrolments</th><th></th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var row in upcoming)
+                        {
+                            <tr>
+                                <td>@row.Event.EventDate.ToString("ddd, d MMM yyyy")</td>
+                                <td><strong>@row.Event.EventName</strong></td>
+                                <td>@row.EnrolmentCount</td>
+                                <td class="text-end">
+                                    <a asp-action="Enrolments" asp-route-eventId="@row.Event.EventID" class="btn btn-outline-secondary btn-sm">Enrolments</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+    <div class="rd-panel">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="text-uppercase fw-bold mb-0">All my events</h4>
+            <a asp-action="Events" class="btn btn-rd-dark btn-sm">Manage events</a>
+        </div>
+
+        @if (!Model.Events.Any())
+        {
+            <p class="text-muted mb-0">You have not created any events yet.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table rd-table align-middle mb-0">
+                    <thead>
+                        <tr><th>Event</th><th>Date</th><th>Location</th><th>Enrolments</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var row in Model.Events)
+                        {
+                            <tr>
+                                <td><strong>@row.Event.EventName</strong></td>
+                                <td>@row.Event.EventDate.ToString("d MMM yyyy")</td>
+                                <td>@row.Event.Location</td>
+                                <td>@row.EnrolmentCount</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

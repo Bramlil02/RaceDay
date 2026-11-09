@@ -1,0 +1,44 @@
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="container">
+
+    <section class="rd-hero">
+        <h1>Your race. Your day.</h1>
+        <p class="mb-1">Discover upcoming running, walking and cycling events, enrol in seconds,</p>
+        <p>and keep track of every finish time and position.</p>
+
+        <a asp-controller="Account" asp-action="Register" class="btn btn-rd-primary btn-lg mt-3 me-2">Get started</a>
+        <a asp-controller="Account" asp-action="Login" class="btn btn-outline-light btn-lg mt-3">Log in</a>
+    </section>
+
+    <section class="py-5">
+        <h2 class="text-center fw-bold text-uppercase mb-4">Built for everyone on race day</h2>
+
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="rd-card">
+                    <h3>Participants</h3>
+                    <p>
+                        Browse upcoming events, choose your age or distance category,
+                        enrol straight away and see your personal race history.
+                    </p>
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-rd-primary">Register now</a>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="rd-card">
+                    <h3>Organisers</h3>
+                    <p>
+                        Create events with banner images, manage categories and
+                        enrolments, then publish finish times and positions.
+                    </p>
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-rd-dark">Organiser log in</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>

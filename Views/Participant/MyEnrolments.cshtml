@@ -1,0 +1,70 @@
+@model List<EnrolmentRowViewModel>
+
+@{
+    ViewData["Title"] = "My enrolments";
+}
+
+<div class="container">
+
+    <div class="rd-page-header">
+        <h1>My enrolments</h1>
+        <p>Every event you have enrolled for and where it stands.</p>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="rd-panel text-center">
+            <h3>You have not enrolled in any events yet</h3>
+            <a asp-action="Index" class="btn btn-rd-primary mt-2">Find an event</a>
+        </div>
+    }
+    else
+    {
+        <div class="rd-panel">
+            <div class="table-responsive">
+                <table class="table rd-table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Event</th>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var row in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @if (row.Event != null)
+                                    {
+                                        <a asp-action="Details" asp-route-id="@row.Event.EventID"><strong>@row.Event.EventName</strong></a>
+                                        <div class="text-muted small">@row.Event.Location</div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Event no longer available</span>
+                                    }
+                                </td>
+                                <td>@(row.Event?.EventDate.ToString("d MMM yyyy") ?? "-")</td>
+                                <td>@(string.IsNullOrEmpty(row.CategoryName) ? "-" : row.CategoryName)</td>
+                                <td><partial name="_StatusBadge" model="@row.Registration.PaymentStatus" /></td>
+                                <td class="text-end">
+                                    @if (row.CanCancel)
+                                    {
+                                        <form asp-action="CancelEnrolment" method="post" class="d-inline"
+                                              onsubmit="return confirm('Cancel your enrolment for this event?');">
+                                            <input type="hidden" name="registrationId" value="@row.Registration.RegistrationID" />
+                                            <button type="submit" class="btn btn-outline-danger btn-sm">Cancel</button>
+                                        </form>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

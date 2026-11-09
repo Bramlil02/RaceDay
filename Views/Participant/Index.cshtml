@@ -1,0 +1,82 @@
+@model ParticipantHomeViewModel
+
+@{
+    ViewData["Title"] = "Upcoming events";
+}
+
+<div class="container">
+
+    <div class="rd-page-header">
+        <h1>Upcoming events</h1>
+        <p>Find your next race and enrol in seconds.</p>
+    </div>
+
+    <form method="get" asp-action="Index" class="rd-panel mb-4">
+        <div class="row g-3 align-items-end">
+            <div class="col-lg-3 col-md-6">
+                <label class="form-label" for="search">Search</label>
+                <input type="text" id="search" name="search" value="@Model.Search" class="form-control" placeholder="Name, place or keyword" />
+            </div>
+
+            <div class="col-lg-2 col-md-6">
+                <label class="form-label" for="typeId">Event type</label>
+                <select id="typeId" name="typeId" class="form-select">
+                    <option value="">All types</option>
+                    @foreach (var type in Model.EventTypes)
+                    {
+                        <option value="@type.CategoryID" selected="@(Model.TypeId == type.CategoryID)">@type.CategoryName</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-lg-2 col-md-6">
+                <label class="form-label" for="distance">Distance</label>
+                <select id="distance" name="distance" class="form-select">
+                    <option value="">Any distance</option>
+                    <option value="lt5" selected="@(Model.Distance == "lt5")">Under 5 km</option>
+                    <option value="5to10" selected="@(Model.Distance == "5to10")">5 - 10 km</option>
+                    <option value="10to21" selected="@(Model.Distance == "10to21")">10 - 21 km</option>
+                    <option value="over21" selected="@(Model.Distance == "over21")">Over 21 km</option>
+                </select>
+            </div>
+
+            <div class="col-lg-2 col-md-6">
+                <label class="form-label" for="period">Date</label>
+                <select id="period" name="period" class="form-select">
+                    <option value="">Any time</option>
+                    <option value="week" selected="@(Model.Period == "week")">Next 7 days</option>
+                    <option value="month" selected="@(Model.Period == "month")">Next month</option>
+                    <option value="3months" selected="@(Model.Period == "3months")">Next 3 months</option>
+                </select>
+            </div>
+
+            <div class="col-lg-3 d-flex gap-2">
+                <button type="submit" class="btn btn-rd-primary flex-fill">Filter</button>
+                <a asp-action="Index" class="btn btn-outline-secondary flex-fill">Clear</a>
+            </div>
+        </div>
+    </form>
+
+    @if (!string.IsNullOrEmpty(Model.LoadError))
+    {
+        <div class="alert alert-danger">@Model.LoadError</div>
+    }
+    else if (!Model.Events.Any())
+    {
+        <div class="rd-panel text-center">
+            <h3>No events found</h3>
+            <p class="mb-0">Try changing your filters, or check back soon for new events.</p>
+        </div>
+    }
+    else
+    {
+        <p class="text-muted">@Model.Events.Count event(s) found</p>
+
+        <div class="row g-4">
+            @foreach (var card in Model.Events)
+            {
+                <partial name="_EventCard" model="card" />
+            }
+        </div>
+    }
+</div>

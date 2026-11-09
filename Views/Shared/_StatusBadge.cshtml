@@ -1,0 +1,21 @@
+@model string
+@{
+    string status = Model ?? "";
+    string css = "bg-secondary";
+
+    if (status.Equals("Confirmed", StringComparison.OrdinalIgnoreCase) ||
+        status.Equals("Paid", StringComparison.OrdinalIgnoreCase))
+    {
+        css = "rd-status-confirmed";
+    }
+    else if (status.Equals("Pending", StringComparison.OrdinalIgnoreCase))
+    {
+        css = "rd-status-pending";
+    }
+    else if (status.Equals("Cancelled", StringComparison.OrdinalIgnoreCase) ||
+             status.Equals("Failed", StringComparison.OrdinalIgnoreCase))
+    {
+        css = "rd-status-cancelled";
+    }
+}
+<span class="badge rd-status @css">@status</span>

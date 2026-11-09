@@ -1,0 +1,120 @@
+@model EventDetailViewModel
+
+@{
+    ViewData["Title"] = Model.Event.EventName;
+}
+
+<div class="container">
+
+    <p><a asp-action="Index">&larr; Back to events</a></p>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Event.BannerUrl))
+    {
+        <img src="@Model.Event.BannerUrl" class="rd-banner rd-banner-large mb-4" alt="Banner for @Model.Event.EventName" />
+    }
+    else
+    {
+        <div class="rd-banner rd-banner-large rd-banner-placeholder mb-4"><span>RACE DAY</span></div>
+    }
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="rd-panel">
+                <div class="mb-2">
+                    @if (!string.IsNullOrWhiteSpace(Model.TypeName))
+                    {
+                        <span class="badge rd-chip">@Model.TypeName</span>
+                    }
+                    @if (Model.Route != null)
+                    {
+                        <span class="badge rd-chip rd-chip-alt">@Model.Route.DistanceKm.ToString("0.##") km</span>
+                    }
+                </div>
+
+                <h1 class="rd-heading fw-bold text-uppercase">@Model.Event.EventName</h1>
+
+                <p class="mb-1"><strong>Date:</strong> @Model.Event.EventDate.ToString("dddd, d MMMM yyyy")</p>
+                <p class="mb-1"><strong>Location:</strong> @Model.Event.Location</p>
+                <p class="mb-3"><strong>Entry fee:</strong> @Format.Money(Model.Event.EntryFee)</p>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Event.Description))
+                {
+                    <h4 class="text-uppercase fw-bold">About this event</h4>
+                    <p style="white-space: pre-line;">@Model.Event.Description</p>
+                }
+
+                <h4 class="text-uppercase fw-bold mt-4">Available categories</h4>
+
+                @if (!Model.Categories.Any())
+                {
+                    <p class="text-muted">This event has no separate categories. Everyone enrols in the main event.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table rd-table align-middle">
+                            <thead>
+                                <tr><th>Category</th><th>Type</th><th>Details</th></tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var category in Model.Categories)
+                                {
+                                    <tr>
+                                        <td><strong>@category.Name</strong></td>
+                                        <td>@category.CategoryType</td>
+                                        <td>@category.Description</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="rd-panel">
+                <h4 class="text-uppercase fw-bold">Enrol</h4>
+
+                @if (Model.MyEnrolment != null)
+                {
+                    <p class="mb-2">You are enrolled in this event.</p>
+                    <p class="mb-1">Status: <partial name="_StatusBadge" model="@Model.MyEnrolment.PaymentStatus" /></p>
+
+                    @if (!string.IsNullOrEmpty(Model.MyCategoryName))
+                    {
+                        <p class="mb-3">Category: <strong>@Model.MyCategoryName</strong></p>
+                    }
+
+                    <a asp-action="MyEnrolments" class="btn btn-rd-dark w-100">View my enrolments</a>
+                }
+                else if (!Model.CanEnrol)
+                {
+                    <div class="alert alert-secondary mb-0">Enrolment for this event is closed.</div>
+                }
+                else
+                {
+                    <form asp-action="Enrol" method="post">
+                        <input type="hidden" name="eventId" value="@Model.Event.EventID" />
+
+                        @if (Model.Categories.Any())
+                        {
+                            <div class="mb-3">
+                                <label class="form-label" for="eventCategoryId">Choose your category</label>
+                                <select id="eventCategoryId" name="eventCategoryId" class="form-select" required>
+                                    <option value="">Select a category...</option>
+                                    @foreach (var category in Model.Categories)
+                                    {
+                                        <option value="@category.EventCategoryID">@category.Name (@category.CategoryType)</option>
+                                    }
+                                </select>
+                            </div>
+                        }
+
+                        <button type="submit" class="btn btn-rd-primary w-100">Enrol now</button>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+</div>

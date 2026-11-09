@@ -1,0 +1,87 @@
+@model List<EventSummaryRow>
+
+@{
+    ViewData["Title"] = "My events";
+}
+
+<div class="container">
+
+    <div class="rd-page-header d-flex flex-wrap justify-content-between align-items-center">
+        <div>
+            <h1>My events</h1>
+            <p>Create, edit and delete your events.</p>
+        </div>
+        <a asp-action="CreateEvent" class="btn btn-rd-primary mt-2 mt-md-0">Create event</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="rd-panel text-center">
+            <h3>No events yet</h3>
+            <a asp-action="CreateEvent" class="btn btn-rd-primary mt-2">Create your first event</a>
+        </div>
+    }
+    else
+    {
+        <div class="rd-panel">
+            <div class="table-responsive">
+                <table class="table rd-table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Event</th>
+                            <th>Date</th>
+                            <th>Type / distance</th>
+                            <th>Enrolled</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var row in Model)
+                        {
+                            bool finished = row.Event.EventDate.Date <= DateTime.Today;
+
+                            <tr>
+                                <td style="width:90px;">
+                                    @if (!string.IsNullOrWhiteSpace(row.Event.BannerUrl))
+                                    {
+                                        <img src="@row.Event.BannerUrl" alt="Banner" style="width:80px;height:50px;object-fit:cover;border-radius:6px;" />
+                                    }
+                                </td>
+                                <td>
+                                    <strong>@row.Event.EventName</strong>
+                                    <div class="text-muted small">@row.Event.Location</div>
+                                </td>
+                                <td>@row.Event.EventDate.ToString("d MMM yyyy")</td>
+                                <td>
+                                    @row.TypeName
+                                    @if (row.DistanceKm.HasValue)
+                                    {
+                                        <span class="text-muted">&middot; @row.DistanceKm.Value.ToString("0.##") km</span>
+                                    }
+                                </td>
+                                <td>@row.EnrolmentCount</td>
+                                <td>@row.Event.Status</td>
+                                <td class="text-end text-nowrap">
+                                    <a asp-action="EditEvent" asp-route-id="@row.Event.EventID" class="btn btn-outline-secondary btn-sm">Edit</a>
+                                    <a asp-action="Categories" asp-route-eventId="@row.Event.EventID" class="btn btn-outline-secondary btn-sm">Categories</a>
+                                    <a asp-action="Enrolments" asp-route-eventId="@row.Event.EventID" class="btn btn-outline-secondary btn-sm">Enrolments</a>
+                                    @if (finished)
+                                    {
+                                        <a asp-action="Results" asp-route-eventId="@row.Event.EventID" class="btn btn-rd-dark btn-sm">Results</a>
+                                    }
+                                    <form asp-action="DeleteEvent" method="post" class="d-inline"
+                                          onsubmit="return confirm('Delete this event? All of its categories and enrolments will be removed too.');">
+                                        <input type="hidden" name="id" value="@row.Event.EventID" />
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

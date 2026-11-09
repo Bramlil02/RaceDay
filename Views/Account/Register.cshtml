@@ -1,0 +1,63 @@
+@model RegisterViewModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="rd-panel">
+
+                <h2 class="text-center text-uppercase fw-bold mb-4">Create a RaceDay account</h2>
+
+                <form asp-action="Register" method="post" novalidate>
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label">Full name</label>
+                        <input asp-for="Name" class="form-control" autocomplete="name" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">Email address</label>
+                        <input asp-for="Email" class="form-control" autocomplete="email" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label">Password</label>
+                        <input asp-for="Password" class="form-control" autocomplete="new-password" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ConfirmPassword" class="form-label">Confirm password</label>
+                        <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="OrganiserCode" class="form-label">Organiser access code <span class="text-muted fw-normal">(optional)</span></label>
+                        <input asp-for="OrganiserCode" class="form-control" autocomplete="off" />
+                        <div class="form-text">Leave this empty to register as a Participant.</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-rd-primary w-100">Create account</button>
+                </form>
+
+                <p class="text-center mt-3 mb-0">
+                    Already registered?
+                    <a asp-action="Login">Log in</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

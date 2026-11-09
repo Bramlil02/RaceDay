@@ -1,0 +1,42 @@
+@model EventCardViewModel
+
+<div class="col-md-6 col-lg-4">
+    <div class="card rd-event-card h-100">
+        @if (!string.IsNullOrWhiteSpace(Model.Event.BannerUrl))
+        {
+            <img src="@Model.Event.BannerUrl" class="rd-banner" alt="Banner for @Model.Event.EventName" />
+        }
+        else
+        {
+            <div class="rd-banner rd-banner-placeholder"><span>RACE DAY</span></div>
+        }
+
+        <div class="card-body d-flex flex-column">
+            <div class="mb-2">
+                @if (!string.IsNullOrWhiteSpace(Model.TypeName))
+                {
+                    <span class="badge rd-chip">@Model.TypeName</span>
+                }
+                @if (Model.DistanceKm.HasValue)
+                {
+                    <span class="badge rd-chip rd-chip-alt">@Model.DistanceKm.Value.ToString("0.##") km</span>
+                }
+                @if (Model.IsEnrolled)
+                {
+                    <span class="badge rd-status rd-status-confirmed">Enrolled</span>
+                }
+            </div>
+
+            <h3 class="rd-card-title">@Model.Event.EventName</h3>
+
+            <p class="text-muted mb-1">📅 @Model.Event.EventDate.ToString("dddd, d MMMM yyyy")</p>
+            <p class="text-muted mb-3">📍 @Model.Event.Location</p>
+
+            <div class="mt-auto d-flex justify-content-between align-items-center">
+                <strong>@Format.Money(Model.Event.EntryFee)</strong>
+                <a asp-controller="Participant" asp-action="Details" asp-route-id="@Model.Event.EventID"
+                   class="btn btn-rd-primary btn-sm">View event</a>
+            </div>
+        </div>
+    </div>
+</div>

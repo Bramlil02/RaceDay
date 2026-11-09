@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace RaceDayMVC.Models
 {
     public class RegisterViewModel
     {
         [Required(ErrorMessage = "Please enter your full name.")]
+        [StringLength(100, ErrorMessage = "Your name must be 100 characters or fewer.")]
         public string Name { get; set; } = "";
 
         [Required(ErrorMessage = "Please enter your email.")]
@@ -20,5 +21,8 @@ namespace RaceDayMVC.Models
         [Compare("Password", ErrorMessage = "The passwords do not match.")]
         [DataType(DataType.Password)]
         public string ConfirmPassword { get; set; } = "";
+
+        // Leave empty to register as a Participant.
+        public string? OrganiserCode { get; set; }
     }
 }

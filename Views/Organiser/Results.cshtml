@@ -1,0 +1,88 @@
+@model ResultsEntryViewModel
+
+@{
+    ViewData["Title"] = "Enter results";
+}
+
+<div class="container">
+
+    <div class="rd-page-header">
+        <h1>Enter results</h1>
+        <p>
+            @Model.EventName &middot; @Model.EventDate.ToString("d MMM yyyy")
+            @if (Model.DistanceKm.HasValue)
+            {
+                <text>&middot; @Model.DistanceKm.Value.ToString("0.##") km</text>
+            }
+        </p>
+    </div>
+
+    <p><a asp-action="Events">&larr; Back to my events</a></p>
+
+    @if (!Model.Rows.Any())
+    {
+        <div class="rd-panel text-center">
+            <h3>There are no enrolled participants to record results for</h3>
+        </div>
+    }
+    else
+    {
+        <div class="rd-panel">
+            <p class="text-muted">
+                Enter finish times as <strong>hh:mm:ss</strong> (for example 01:45:30).
+                Leave the position empty to rank participants automatically by finish time.
+                Average pace is worked out for you.
+            </p>
+
+            <form asp-action="Results" method="post">
+                <input type="hidden" name="eventId" value="@Model.EventID" />
+
+                <div class="table-responsive">
+                    <table class="table rd-table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Participant</th>
+                                <th>Category</th>
+                                <th>Result</th>
+                                <th>Finish time</th>
+                                <th>Position</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.Rows.Count; i++)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@Model.Rows[i].ParticipantName</strong>
+                                        <input type="hidden" name="rows[@i].RegistrationID" value="@Model.Rows[i].RegistrationID" />
+                                        <input type="hidden" name="rows[@i].ParticipantName" value="@Model.Rows[i].ParticipantName" />
+                                        <input type="hidden" name="rows[@i].CategoryName" value="@Model.Rows[i].CategoryName" />
+                                    </td>
+                                    <td>@(string.IsNullOrEmpty(Model.Rows[i].CategoryName) ? "-" : Model.Rows[i].CategoryName)</td>
+                                    <td>
+                                        <select name="rows[@i].ResultStatus" class="form-select form-select-sm">
+                                            <option value="Completed" selected="@(Model.Rows[i].ResultStatus == "Completed")">Completed</option>
+                                            <option value="DNF" selected="@(Model.Rows[i].ResultStatus == "DNF")">Did not finish</option>
+                                            <option value="DNS" selected="@(Model.Rows[i].ResultStatus == "DNS")">Did not start</option>
+                                            <option value="DSQ" selected="@(Model.Rows[i].ResultStatus == "DSQ")">Disqualified</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="text" name="rows[@i].FinishTime" value="@Model.Rows[i].FinishTime"
+                                               class="form-control form-control-sm" placeholder="hh:mm:ss" style="max-width:130px;" />
+                                    </td>
+                                    <td>
+                                        <input type="number" min="1" name="rows[@i].Position" value="@Model.Rows[i].Position"
+                                               class="form-control form-control-sm" style="max-width:90px;" />
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <button type="submit" class="btn btn-rd-primary">Publish results</button>
+            </form>
+        </div>
+    }
+</div>
